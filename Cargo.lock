@@ -243,6 +243,7 @@ name = "file_uploader"
 version = "0.1.0"
 dependencies = [
  "rocket",
+ "serde",
  "tokio",
 ]
 

@@ -1,0 +1,22 @@
+console.log("Hello");
+const util = require('util');
+
+// Assuming db.getData, db.processData, and db.saveData are callback-based
+const getData = util.promisify(db.getData).bind(db);
+const processData = util.promisify(db.processData).bind(db);
+const saveData = util.promisify(db.saveData).bind(db);
+
+async function handleData() {
+    try {
+        let data = await getData();
+        data.a = "test";
+        data.b = 1111;
+        data = await processData(data);
+        await saveData(data);
+        console.log("finished");
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+handleData();

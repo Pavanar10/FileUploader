@@ -3,8 +3,17 @@
 
 use rocket::fs::TempFile;
 use rocket::form::Form;
-use rocket::tokio::fs;
+use rocket::serde::{self, Deserialize, Serialize};
+//use rocket::tokio::fs;
+use std::fs;
 use std::path::PathBuf;
+use rocket::serde::json::Json;
+
+
+#[derive(Serialize)]
+struct  FileList{
+    files:Vec<String>
+}
 
 #[derive(FromForm)]
 struct Upload<'r>{
@@ -17,7 +26,7 @@ async fn upload(mut form:Form<Upload<'_>>)->String{
     //create Upload Folder if it doesn't Exists
 
     let folder = PathBuf::from("uploads");
-    fs::create_dir_all(&folder).await.unwrap();
+    rocket::tokio::fs::create_dir_all(&folder).await.unwrap();
 
     let filepath = folder.join(&fileName);
 
@@ -32,9 +41,23 @@ async fn upload(mut form:Form<Upload<'_>>)->String{
 
 }
 
+#[get("/files")]
+async fn list_files()->Json<FileList>{
+    let path  = std::path::Path::new("uploads");
+    let mut files = vec![];
+
+    if let Ok(entries) = std::fs::read_dir(path){
+        for entry in entries{
+            if let Some(name) = entry.unwrap().file_name().to_str(){
+                files.push(name.to_string());
+            }
+        }
+    }
+    Json(FileList{files})
+}
 
 #[launch]
 fn rocket()->_{
-    rocket::build().mount("/", routes![upload])
+    rocket::build().mount("/", routes![upload,list_files])
 }
 
