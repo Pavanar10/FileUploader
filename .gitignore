@@ -1,0 +1,27 @@
+#git ignore file 
+
+# Ignore Rust build outputs
+/target/
+
+# Ignore compiled binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.o
+*.obj
+*.a
+*.lib
+
+# Ignore core dumps and debug files
+core.*
+*.pdb
+
+# If you generate logs or dumps
+*.log
+*.dump
+
+# VS Code settings (optional)
+.vscode/
+
